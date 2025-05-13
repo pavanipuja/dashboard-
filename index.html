@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>WealthifyMe - Personal Finance Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        
+    .dashboard {
+      padding: var(--spacing-lg);
+    }
+
+    .dashboard-title {
+      font-size: 2rem;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .dashboard-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .card {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: var(--spacing-md);
+      border-radius: var(--border-radius-lg);
+    }
+    .dashboard-section {
+      margin-top: var(--spacing-lg);
+    }
+
+    .charts-container {
+      display: flex;
+      flex-wrap: wrap;
+      padding-top: 50px;
+      gap: var(--spacing-md);
+      justify-content: space-around;
+    }
+
+    canvas {
+      background-color: #1f2937;
+      border-radius: var(--border-radius-lg);
+      padding: var(--spacing-sm);
+      max-width: 100%;
+    }
+
+    .chart-box {
+      flex: 1 1 300px;
+      max-width: 400px;
+    }
+    
+
+    .transaction-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.transaction {
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-md);
+  background-color: rgba(255, 255, 255, 0.05);
+  border-left: 5px solid;
+}
+
+.transaction.past {
+  border-color: #9ca3af; /* gray */
+}
+
+.transaction.present {
+  border-color: #60a5fa; /* blue */
+}
+
+.transaction.future {
+  border-color: #fbbf24; /* yellow */
+}
+
+.label {
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: rgb(0, 0, 0);
+}
+
+.details {
+  color: rgba(0, 0, 0, 0.8);
+  font-size: 0.9rem;
+}
+
+
+.challenges {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.challenge-card {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 16px;
+  border-radius: 12px;
+  color: rgb(0, 0, 0);
+  border-left: 4px solid var(--accent-teal);
+}
+
+.challenge-card h4 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.challenge-card p {
+  margin: 4px 0 10px;
+  font-size: 0.95rem;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+
+.challenge-card progress {
+  width: 100%;
+  height: 10px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.challenge-footer {
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.challenge-footer button {
+  background-color: var(--accent-teal);
+  border: none;
+  padding: 6px 12px;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.see-all {
+  font-size: 0.9rem;
+  text-decoration: underline;
+  color: var(--accent-teal);
+  text-align: right;
+}
+    
+    </style>
+
+  </head>
+  <body>
+        <div class="app-container">
+          <div id="sidebar"></div>
+          <main id="main-content">
+            <div id="top-bar"></div>
+            <div id="dashboard-content"></div>
+      
+            <div class="dashboard">
+              <h1 class="dashboard-title">Dashboard</h1>
+              <div class="dashboard-cards">
+                <div class="card"><h3>Total Balance</h3><p>$12,400</p></div>
+                <div class="card"><h3>This Month's Expenses</h3><p>$1,200</p></div>
+                <div class="card"><h3>Budget Used</h3><p>65%</p></div>
+                <div class="card"><h3>Goals Progress</h3><p>3/5 Achieved</p></div>
+              </div>
+              <div class="dashboard-section">
+                <h2>Visual Insights</h2>
+                <div class="charts-container">
+                  <div class="chart-box">
+                    <h3>Expense Breakdown</h3>
+                    <canvas id="doughnutChart" width="300" height="300"></canvas>
+                  </div>
+                  <div class="chart-box">
+                    <h3>Budget vs Expenses</h3>
+                    <canvas id="barChart" width="300" height="300"></canvas>
+                  </div>
+                </div>
+                <div class="dashboard-section">
+                    <h2>Transactions Timeline</h2>
+                    <div class="transaction-list">
+                      <div class="transaction past">
+                        <div class="label">🕒 Past</div>
+                        <div class="details">Paid Rent - ₹10,000 on Apr 1</div>
+                      </div>
+                      <div class="transaction present">
+                        <div class="label">📍 Today</div>
+                        <div class="details">Bought Groceries - ₹1,200</div>
+                      </div>
+                      <div class="transaction future">
+                        <div class="label">🔮 Predicted</div>
+                        <div class="details">Credit Card Bill - ₹3,500 on May 20</div>
+                      </div>
+                    </div>
+                    <div class="dashboard-section">
+                        <h3>Savings Challenges</h3>
+                        <div class="challenges">
+                          
+                          <div class="challenge-card">
+                            <h4>No Dining Out Challenge</h4>
+                            <p>Avoid eating out for 30 days</p>
+                            <div class="progress-info">
+                              <span>$200 of $300</span>
+                              <span>67%</span>
+                            </div>
+                            <progress value="200" max="300"></progress>
+                            <div class="challenge-footer">
+                              <span>Ends: Mar 15</span>
+                              <button>Join Challenge</button>
+                            </div>
+                          </div>
+                      
+                          <div class="challenge-card">
+                            <h4>Coffee Savings</h4>
+                            <p>Make coffee at home instead of buying</p>
+                            <div class="progress-info">
+                              <span>$65 of $100</span>
+                              <span>65%</span>
+                            </div>
+                            <progress value="65" max="100"></progress>
+                            <div class="challenge-footer">
+                              <span>Ends: Mar 1</span>
+                              <button>Join Challenge</button>
+                            </div>
+                          </div>
+                      
+                          <a href="#" class="see-all">See All Challenges</a>
+                        </div>
+                      </div>
+
+      
+          </main>
+        </div>
+      
+      
+    
+
+    <script type="module">
+      function renderSidebar(element) {
+        element.innerHTML = `
+      <div class="sidebar">
+        <div class="sidebar-header">
+          <div class="logo-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="5" width="20" height="14" rx="2" />
+              <line x1="2" y1="10" x2="22" y2="10" />
+            </svg>
+          </div>
+          <div class="logo-text">WealthifyMe</div>
+        </div>
+        
+        <nav class="sidebar-nav">
+          <a href="index.html" class="nav-item active" data-page="dashboard">
+            <i>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+            </i>
+            <span class="nav-text">Dashboard</span>
+          </a>
+          
+          <a href="transactions.html" class="nav-item" data-page="transactions">
+            <i>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline>
+                <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path>
+              </svg>
+            </i>
+            <span class="nav-text">Transactions</span>
+          </a>
+          
+          <a href="budgets.html" class="nav-item" data-page="budgets">
+            <i>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </i>
+            <span class="nav-text">Budgets</span>
+          </a>
+          
+          <a href="#" class="nav-item" data-page="goals">
+            <i>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20v-6M6 20V10M18 20V4"></path>
+              </svg>
+            </i>
+            <span class="nav-text">Financial Goals</span>
+          </a>
+          
+          <a href="#" class="nav-item" data-page="compare">
+            <i>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </i>
+            <span class="nav-text">Peer Comparison</span>
+          </a>
+          
+          <a href="#" class="nav-item" data-page="challenges">
+            <i>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+            </i>
+            <span class="nav-text">Group Challenges</span>
+          </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+          © 2025 WealthifyMe
+        </div>
+      </div>
+      
+      <button id="toggle-sidebar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    `;
+
+        const navItems = element.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+          item.addEventListener('click', (e) => {
+            // e.preventDefault();
+            navItems.forEach(navItem => navItem.classList.remove('active'));
+            item.classList.add('active');
+            const page = item.getAttribute('data-page');
+            handleNavigation(page);
+          });
+        });
+      }
+
+     
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const sidebar = document.getElementById('sidebar');
+        if (typeof renderSidebar === 'function') renderSidebar(sidebar); // optional
+        const navItems = document.querySelectorAll('.nav-item');
+        const currentPath = window.location.pathname;
+        const currentPage = currentPath.substring(currentPath.lastIndexOf('/') + 1) || 'index.html';
+        console.log('Current page:', currentPage); // ✅ Debug output
+        navItems.forEach(item => {
+            const href = item.getAttribute('href');
+            if (href === currentPage) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active'); // Clean up if left over from previous render
+            }
+        });
+    });
+      
+    /****************  Graphs-JS  ******************/
+      // Doughnut Chart
+    const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
+    new Chart(doughnutCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Groceries', 'Utilities', 'Transport', 'Dining'],
+        datasets: [{
+          data: [300, 150, 200, 100],
+          backgroundColor: ['#38bdf8', '#fbbf24', '#34d399', '#f87171'],
+        }]
+      },
+      options: {
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { color: '#fff' }
+          }
+        }
+      }
+    });
+
+    // Bar Chart
+    const barCtx = document.getElementById('barChart').getContext('2d');
+    new Chart(barCtx, {
+      type: 'bar',
+      data: {
+        labels: ['January', 'February', 'March'],
+        datasets: [
+          {
+            label: 'Budget',
+            data: [1000, 1200, 1100],
+            backgroundColor: '#60a5fa'
+          },
+          {
+            label: 'Expense',
+            data: [800, 1300, 900],
+            backgroundColor: '#f87171'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            labels: { color: '#fff' }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#fff' }
+          },
+          y: {
+            ticks: { color: '#fff' },
+            beginAtZero: true
+          }
+        }
+      }
+    });
+    </script>
+  </body>
+</html>
