@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Peer Comparison</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+    .ranking-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 40px;
+      margin-bottom: 30px;
+    }
+    .rank {
+      text-align: center;
+    }
+    .rank-box {
+      width: 80px;
+      background-color: #4CAF50;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      border-radius: 10px 10px 0 0;
+      position: relative;
+    }
+    .rank-box img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-bottom: 5px;
+      margin-top: 5px;
+    }
+    .rank-label {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #4CAF50;
+    }
+    .others {
+      text-align: center;
+    }
+    .others ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    .others li {
+      padding: 5px 0;
+    }
+    .others img {
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Peer Comparison Rankings</h2>
+  <div class="ranking-container" id="podium">
+    <!-- JS dynamically inserts ranks here -->
+  </div>
+
+  <div class="others">
+    <h3>Other Members</h3>
+    <ul id="others-list">
+      <!-- JS dynamically inserts other ranks -->
+    </ul>
+  </div>
+
+  <script>
+    const peers = [
+      { name: "Jamie Smith", spending: 400, avatar: "https://i.pravatar.cc/150?img=1" },
+      { name: "Taylor Jones", spending: 360, avatar: "https://i.pravatar.cc/150?img=2" },
+      { name: "Casey Brown", spending: 410, avatar: "https://i.pravatar.cc/150?img=3" },
+      { name: "Morgan Lee", spending: 290, avatar: "https://i.pravatar.cc/150?img=4" },
+      { name: "Alex Morgan", spending: 250, avatar: "https://i.pravatar.cc/150?img=5" },
+    ];
+
+    const sortedPeers = peers.sort((a, b) => b.spending - a.spending);
+
+    const podiumRanks = [1, 0, 2]; // order to show 2nd, 1st, 3rd visually
+    const labels = ["2nd", "1st", "3rd"];
+    const heights = [100, 160, 120];
+
+    const podium = document.getElementById("podium");
+    for (let i = 0; i < 3; i++) {
+      const index = podiumRanks[i];
+      const p = sortedPeers[index];
+      const box = document.createElement("div");
+      box.className = "rank";
+      box.innerHTML = `
+        <div class="rank-box" style="height:${heights[i]}px">
+          <img src="${p.avatar}" alt="avatar">
+        </div>
+        <div class="rank-label">${labels[i]}</div>
+        <div>${p.name}</div>
+      `;
+      podium.appendChild(box);
+    }
+
+    const othersList = document.getElementById("others-list");
+    for (let i = 3; i < sortedPeers.length; i++) {
+      const li = document.createElement("li");
+      li.innerHTML = `<img src="${sortedPeers[i].avatar}" style="width: 30px; height: 30px; border-radius: 50%; vertical-align: middle;"> ${i + 1}th - ${sortedPeers[i].name}`;
+      othersList.appendChild(li);
+    }
+  </script>
+</body>
+</html>

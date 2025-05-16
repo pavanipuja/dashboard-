@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Social Finance</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background-color: #f7f9fa;
+    }
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid #ddd;
+      background: white;
+      padding: 1rem 2rem;
+    }
+    .tab {
+      margin-right: 2rem;
+      padding-bottom: 0.5rem;
+      cursor: pointer;
+    }
+    .tab.active {
+      border-bottom: 3px solid #00bfa6;
+      color: #00bfa6;
+      font-weight: 600;
+    }
+    .content {
+      display: none;
+      padding: 2rem;
+    }
+    .content.active {
+      display: block;
+    }
+    .card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .expense-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .expense-meta {
+      color: #666;
+      font-size: 0.9rem;
+    }
+    .participants {
+      margin-top: 1rem;
+    }
+    .participant {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: #dff7f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      font-weight: 600;
+      color: #333;
+    }
+    .status {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .settled {
+      background-color: #d2f5dc;
+      color: #218c3c;
+    }
+    .pending {
+      background-color: #fff3c4;
+      color: #946100;
+    }
+    .reminder {
+      color: #00bfa6;
+      cursor: pointer;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('peer')">Peer Comparisons</div>
+  <div class="tab" onclick="switchTab('savings')">Savings Challenges</div>
+  <div class="tab" onclick="switchTab('group')">Group Expenses</div>
+</div>
+
+<div id="peer" class="content active">
+  <div class="card">
+    <h2>Compare with Peers</h2>
+    <p>This section shows your spending vs peers (dummy content here).</p>
+  </div>
+</div>
+
+<div id="savings" class="content">
+  <div class="card">
+    <h2>Savings Challenges</h2>
+    <p>No Dining Out Challenge – 67% complete ($200 of $300)</p>
+    <p>Coffee Savings – 45% complete ($90 of $200)</p>
+  </div>
+</div>
+
+<div id="group" class="content">
+  <div class="card">
+    <div class="expense-header">
+      <div>
+        <h3>Dinner at Italian Restaurant</h3>
+        <div class="expense-meta">Feb 10 • Paid by Alex Morgan</div>
+      </div>
+      <div><strong>$120.00</strong></div>
+    </div>
+    <div class="participants">
+      <div class="participant">
+        <div style="display:flex;align-items:center">
+          <div class="circle">AM</div>
+          <div>Alex Morgan</div>
+        </div>
+        <div class="status settled">Paid ✓ Settled</div>
+      </div>
+      <div class="participant">
+        <div style="display:flex;align-items:center">
+          <div class="circle">JS</div>
+          <div>Jamie Smith</div>
+        </div>
+        <div>$40.00 <span class="status pending">✕ Pending</span></div>
+      </div>
+      <div class="participant">
+        <div style="display:flex;align-items:center">
+          <div class="circle">TJ</div>
+          <div>Taylor Jones</div>
+        </div>
+        <div>$40.00 <span class="status settled">✓ Settled</span></div>
+      </div>
+      <div class="participant">
+        <div style="display:flex;align-items:center">
+          <div class="circle">CB</div>
+          <div>Casey Brown</div>
+        </div>
+        <div>$40.00 <span class="status pending">✕ Pending</span></div>
+      </div>
+    </div>
+    <div class="reminder">Send reminder</div>
+  </div>
+</div>
+
+<script>
+  function switchTab(id) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+    document.querySelector(`.tab[onclick*="${id}"]`).classList.add('active');
+    document.getElementById(id).classList.add('active');
+  }
+</script>
+
+</body>
+</html>
